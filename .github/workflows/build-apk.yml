@@ -21,6 +21,20 @@ jobs:
         uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: '8.9'
+      - name: Check for forbidden sensitive files
+        shell: bash
+        run: |
+          if git ls-files | grep -Ei '(^|/)(private-data|recordings|backups|exports)/|\.(jks|keystore|p12|pem|sqlite|sqlite3|gpx|kml|m4a|wav)        run: gradle --no-daemon :app:assembleDebug
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: xucheng-trace-debug-apk
+          path: app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error
+; then
+            echo "Sensitive file type found in repository" >&2
+            exit 1
+          fi
       - name: Build
         run: gradle --no-daemon :app:assembleDebug
       - name: Upload APK
